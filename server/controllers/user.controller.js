@@ -27,23 +27,28 @@ const newUser = async(req, res) => {
 }
 
 
-const login = async(req, res) => {
+const login = async(req, res, next) => {
 
-    const {username, password} = req.body;
-
-    const user = await User.findOne({ username }).select("+password")
-
-    if(!user){
-        return res.status(400).json({message: "invalid credentials"})
+    try {
+        const {username, password} = req.body;
+    
+        const user = await User.findOne({ username }).select("+password")
+    
+        if(!user){
+            return next(new Error("invalid credentials"))
+        }
+    
+        const isMatch = await bcrypt.compare(password, user.password)
+    
+        if(!isMatch){
+            return next(new Error("invalid credentials"))
+        }
+    
+        sendToken(res, user, 200, `welcome back, ${user.name}`)
+    } catch (error) {
+        next(error)
+        
     }
-
-    const isMatch = await bcrypt.compare(password, user.password)
-
-    if(!isMatch){
-        return res.status(400).json({message: "invalid credentials"})
-    }
-
-    sendToken(res, user, 200, `welcome back, ${user.name}`)
 }
 
 export {login, newUser}
