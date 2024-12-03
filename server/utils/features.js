@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import jwt from "jsonwebtoken"
+
 const cookieOptions = {
     maxAge: 15 * 24 * 60 * 60 * 1000,
     sameSite: "none",
@@ -27,4 +28,4 @@ const sendToken = (res, user, code, message) => {
     })
 }
 
-export {connectDB, sendToken}
+export {connectDB, sendToken, cookieOptions}

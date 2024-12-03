@@ -1,5 +1,5 @@
 import express from 'express'
-import {login, newUser, getMyProfile} from '../controllers/user.controller.js'
+import {login, newUser, getMyProfile, logout, searchUser} from '../controllers/user.controller.js'
 import { singleAvatar } from '../middlewares/multer.js'
 import { isAuthenticated } from '../middlewares/auth.js'
 
@@ -14,5 +14,9 @@ app.post('/login', login)
 app.use(isAuthenticated)
 
 app.get('/profile', getMyProfile)
+
+app.get('/logout', logout)
+
+app.get('/search', searchUser)
 
 export default app

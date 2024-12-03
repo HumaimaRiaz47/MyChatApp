@@ -1,8 +1,9 @@
 import { TryCatch } from "../middlewares/error.js";
 import { User } from "../models/user.model.js";
-import { sendToken } from "../utils/features.js";
+import { sendToken, cookieOptions } from "../utils/features.js";
 import bcrypt from "bcrypt";
 import { ErrorHandler } from "../utils/utility.js";
+
 
 //create a new user and save it to db and save in cookie
 const newUser = async (req, res) => {
@@ -47,7 +48,7 @@ const login = TryCatch(async (req, res, next) => {
 
 }) 
 
-const getMyProfile = TryCatch(async(req, res , next) => {
+const getMyProfile = TryCatch(async(req, res) => {
 
     const user = await User.findById(req.user).select("-password")
 
@@ -57,4 +58,26 @@ const getMyProfile = TryCatch(async(req, res , next) => {
     })
 })
 
-export { login, newUser, getMyProfile };
+
+const logout = TryCatch(async(req, res) => {
+
+    res
+    .status(200)
+    .cookie("chatapp-token", "",{...cookieOptions, maxAge: 0})
+    .json({
+        success: true,
+        message: "user logged out successfully"
+    })
+})
+
+const searchUser = TryCatch(async(req, res) => {
+
+  res
+  .status(200)
+  .json({
+      success: true,
+      message: "user logged out successfully"
+  })
+} )
+
+export { login, newUser, getMyProfile, logout, searchUser };
