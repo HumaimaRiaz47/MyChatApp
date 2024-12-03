@@ -49,9 +49,11 @@ const login = TryCatch(async (req, res, next) => {
 
 const getMyProfile = TryCatch(async(req, res , next) => {
 
+    const user = await User.findById(req.user).select("-password")
+
     res.status(200).json({
         success: true,
-        data: "hello"
+        user,
     })
 })
 

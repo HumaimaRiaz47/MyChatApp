@@ -9,7 +9,10 @@ app.post('/new',singleAvatar , newUser)
 app.post('/login', login)
 
 //after here user must logged in to access this route
+//the routes where i want the user loggedin  use isAuth middleware before that route
 
-app.get('/profile',isAuthenticated, getMyProfile)
+app.use(isAuthenticated)
+
+app.get('/profile', getMyProfile)
 
 export default app
