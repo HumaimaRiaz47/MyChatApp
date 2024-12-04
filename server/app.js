@@ -1,9 +1,11 @@
 import express from 'express'
-import userRoute from './routes/user.routes.js'
 import { connectDB } from './utils/features.js';
 import dotenv from "dotenv"
 import { errorMiddleware } from './middlewares/error.js';
 import cookieParser from 'cookie-parser';
+
+import userRoute from './routes/user.routes.js'
+import chatRoute from './routes/chat.routes.js'
 
 dotenv.config({
     path: "./.env"
@@ -23,6 +25,7 @@ connectDB(mongoURI)
 
 
 app.use('/user', userRoute)
+app.use('/chat', chatRoute)
 
 app.get('/', (req, res) =>{
 
