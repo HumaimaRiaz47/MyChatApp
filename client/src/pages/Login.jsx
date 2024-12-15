@@ -47,6 +47,8 @@ const password = useInputValidation("");
             label= "Username"
             margin='normal'
             variant='outlined'
+            value={username.value}
+            onChange={username.changeHandler}
             />
 
         <TextField
@@ -56,6 +58,8 @@ const password = useInputValidation("");
             type="password"
             margin="normal"
             variant="outlined"
+            value={password.value}
+            onChange={password.changeHandler}
             />
 
         <Button 
