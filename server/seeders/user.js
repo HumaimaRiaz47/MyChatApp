@@ -1,3 +1,4 @@
+import { Chat } from "../models/chat.model.js";
 import { User } from "../models/user.model.js";
 import { faker, simpleFaker } from "@faker-js/faker";
 
@@ -92,4 +93,20 @@ const createGroupChats = async (numChats) => {
   }
 };
 
+const createMessages = async (numMessages) => {
+    try {
+        const users = await User.find().select("_id")
+        const chats = await Chat.find().select("_id")
+
+        const messagesPromise = []
+
+        for(let i=0; i< numMessages; i++){
+            const randomUser = users[Math.floor(Math.random()*users.length)]
+            const randomChat = chats[Math.floor(Math.random()*chats.length)]
+
+        }
+    } catch (error) {
+        
+    }
+}
 export { createUser };

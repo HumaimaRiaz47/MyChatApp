@@ -383,7 +383,7 @@ const getMessages = TryCatch(async (req, res, next) => {
     Message.countDocuments({ chat: chatId }),
   ]);
 
-  const totalPages = Math.ceil(totalMessagesCount / resultPerPage);
+  const totalPages = Math.ceil(totalMessagesCount / resultPerPage) || 0;
 
   return res.status(200).json({
     success: true,
