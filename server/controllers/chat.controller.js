@@ -2,9 +2,10 @@ import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js"
 import { emitEvent } from "../utils/features.js";
-import { ALERT, REFETCH_CHATS } from "../constants/event.js";
+import { ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALERT, REFETCH_CHATS } from "../constants/event.js";
 import { getOtherMember } from "../lib/helper.js";
 import { User } from "../models/user.model.js";
+import { Message } from "../models/message.model.js";
 
 
 
@@ -135,5 +136,149 @@ const addMembers = TryCatch(async (req, res, next) => {
 
 })
 
+const removeMember = TryCatch(async (req, res, next) => {
 
-export {newGroupChat, getMyChats, getMyGroups, addMembers}
+    const { userId, chatId} = req.body
+
+    const [chat, userThatWillBeRemoved] = await Promise.all([
+        Chat.findById(chatId),
+        User.findById(userId, "name"),
+    ])
+
+    if(!chat) return next(new ErrorHandler("chat not found", 404))
+
+    if (!chat.groupChat) return next(new ErrorHandler("this is not a group chat", 404))
+    
+    if(chat.creator.toString() !== req.user.toString())
+        return next(new ErrorHandler("your are not allowed to add members", 403))
+    
+    if(chat.members.length <= 3)
+        return next(new ErrorHandler("Group must have alteast 3 members", 400))
+
+    chat.members = chat.members.filter((member) => member.toString() !== userId.toString())
+
+    await chat.save();
+
+    emitEvent(
+        req, 
+        ALERT,
+        chat.members,
+        `${userThatWillBeRemoved.name} has been removed from the group`
+    )
+
+    emitEvent(req, REFETCH_CHATS, chat.members)
+
+    return res.status(200).json({
+        success: true,
+        message: "member removed successfully",
+    })
+
+})
+
+const leaveGroup = TryCatch(async (req, res, next) => {
+
+    const chatId = req.params._id
+    const chat = await Chat.findById(chatId)
+
+
+    if(!chat) return next(new ErrorHandler("chat not found", 404))
+
+    if(!chat.groupChat)
+        return next(new ErrorHandler("this is not a group chat", 404))
+
+    const remainingMembers = chat.members.filter(
+        (member) => member.toString() !== req.user.toString()
+    )
+
+    if(remainingMembers.length < 3)
+        return next(new ErrorHandler("group must have atleast 3 members", 400))
+
+    if(chat.creator.toString() === req.user.toString()){
+        const randomElement = Math.floor(Math.random() * remainingMembers.length)
+
+        const newCreator = remainingMembers[randomElement]
+        chat.creator = newCreator
+
+    }
+
+
+
+    chat.members = remainingMembers
+
+    const [user] = await Promise.all([
+        User.findById(req.user, "name"),
+        chat.save(),
+    ])
+
+    emitEvent(
+        req, 
+        ALERT,
+        chat.members,
+        `${user.name} has left the group`
+    )
+
+    return res.status(200).json({
+        success: true,
+        message: "member removed successfully",
+    })
+
+})
+
+const sendAttachments = TryCatch(async (req, res, next) => {
+    const { chatId } = req.body
+    const [chat, me] = await Promise.all([
+        Chat.findById(chatId),
+        User.findById(req.user, "name"),
+    ])
+
+    if(!chat) return next(new ErrorHandler("chat not found", 404))
+
+    const files = req.files || []
+
+    if(files.length < 1) return next(new ErrorHandler("please provide attachments", 400))
+
+    //upload files here
+
+    const attachments = []
+
+
+    const messageForDB = {
+         content: "",
+         attachments,
+          sender:me._id,
+           chat:chatId
+         }
+
+    const messageForRealTime = { 
+        ...messageForDB,
+          sender:{
+            _id: me._id,
+             name: me.name,
+            },
+          
+        }
+
+
+    const message = await Message.create(messageForDB)
+
+
+    emitEvent(req, NEW_ATTACHMENT, chat.members, {
+        message: messageForRealTime, chatId,
+    })
+
+    emitEvent(req, NEW_MESSAGE_ALERT, chat.members, {chatId})
+
+
+    
+
+
+    return res.status(200).json({
+        success: true,
+        message,
+    })
+})
+
+
+
+
+export {newGroupChat, getMyChats, getMyGroups, addMembers, removeMember, leaveGroup, sendAttachments}
