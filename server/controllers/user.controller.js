@@ -3,6 +3,7 @@ import { User } from "../models/user.model.js";
 import { sendToken, cookieOptions } from "../utils/features.js";
 import bcrypt from "bcrypt";
 import { ErrorHandler } from "../utils/utility.js";
+import { Chat } from "../models/chat.model.js";
 
 
 //create a new user and save it to db and save in cookie
@@ -72,11 +73,33 @@ const logout = TryCatch(async(req, res) => {
 
 const searchUser = TryCatch(async(req, res) => {
 
-  res
+  const {name} = req.query
+
+  //finding all my chats
+  const myChats = await Chat.find({ groupChat: false, members: req.user})
+
+  //extracting all users from my chat means friends or people i have chatted with 
+  const allUsersFromMyChats = myChats.flatMap((chat) => chat.members)
+
+  //finding all users except me and myfriends
+  const allUsersExceptMeAndFriends = await User.find({
+    _id: { $nin: allUsersFromMyChats},
+     name: {$regex: name, $options: "i"},
+
+  })  
+
+  //modify the response
+  const users = allUsersExceptMeAndFriends.map((_id, name, avatar) => ({
+    _id,name,
+    avatar: avatar.url,
+  }))
+
+
+  return res
   .status(200)
   .json({
       success: true,
-      message: "user logged out successfully"
+      users,
   })
 } )
 
