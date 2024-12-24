@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import userRoute from './routes/user.routes.js'
 import chatRoute from './routes/chat.routes.js'
-
+import adminRoute from './routes/admin.routes.js'
 import { createUser } from './seeders/user.js';
 
 dotenv.config({
@@ -29,6 +29,7 @@ connectDB(mongoURI)
 
 app.use('/user', userRoute)
 app.use('/chat', chatRoute)
+app.use('/admin', adminRoute)
 
 app.get('/', (req, res) =>{
 

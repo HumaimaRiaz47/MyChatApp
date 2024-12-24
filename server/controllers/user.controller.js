@@ -6,6 +6,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.model.js";
 import {Request }from "../models/request.model.js"
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/event.js";
+import { getOtherMember } from "../lib/helper.js";
 
 //create a new user and save it to db and save in cookie
 const newUser = async (req, res, next) => {
@@ -191,19 +192,46 @@ const getMyNotifications = TryCatch(async (req, res) => {
 })
 
 const getMyFriends = TryCatch(async (req, res) => {
-  const requests = await Request.find({receiver: req.user}).populate(
-    "sender",
-    "name avatar"
-  )
+  const chatId = req.query.chatId;
+  
+  const chats = await Chat.find({
+    members: req.user,
+    groupChat: false,
 
-  const allRequests = requests.map(({_id, sender}) => ({
-    _id,
-    sender: {
-      _id: sender._id,
-      name: sender.name,
-      avatar: sender.avatar.url,
-    },
-  }))
+  }).populate("members", "name avatar")
+
+  const friends = chats.map(({members}) => {
+    const otherUser = getOtherMember(members, req.user)
+
+    return {
+      _id: otherUser._id,
+      name: otherUser.name,
+      avatar: otherUser.avatar.url,
+
+    }
+ })
+
+  if(chatId){
+
+    const chat = await Chat.findById(chatId)
+
+    const availableFriends = friends.filter(
+      (friend) => !chat.members.includes(friend._id)
+    )
+
+    return res.status(200).json({
+      success: true,
+      friends: availableFriends,
+    })
+
+
+  }else{
+    return res.status(200).json({
+      success: true,
+      friends,
+    })
+  }
+ 
 
   return res.status(200).json({
     success: true,
