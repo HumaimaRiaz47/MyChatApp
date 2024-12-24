@@ -116,51 +116,59 @@ const allMessages = TryCatch(async (req, res) => {
 
 const getDashboardStats = TryCatch(async (req, res) => {
 
+    // Fetch counts for group chats, users, total messages, and total chats concurrently using Promise.all
     const [groupsCount, usersCount, messagesCount, totalChatCount] = await Promise.all([
-        Chat.countDocuments({groupChat: true}),
-        User.countDocuments(),
-        Message.countDocuments(),
-        Chat.countDocuments(),
-    ])
+        Chat.countDocuments({groupChat: true}),  // Count the number of group chats
+        User.countDocuments(),  // Count the number of users
+        Message.countDocuments(),  // Count the total number of messages
+        Chat.countDocuments(),  // Count the total number of chats (could be group chats or other types)
+    ]);
 
-    const today = new Date()
+    const today = new Date();  // Get today's date
 
-    const last7Days = new Date()
-    last7Days.setDate(last7Days.getDate() - 7)
+    const last7Days = new Date();  // Create a date object for the last 7 days
+    last7Days.setDate(last7Days.getDate() - 7);  // Subtract 7 days from today's date to get the date 7 days ago
 
+    // Query the database to fetch messages created in the last 7 days
     const last7DaysMessages = await Message.find({
         createdAt: {
-            $gte: last7Days,
-            $lte:today,
-
+            $gte: last7Days,  // Start from 7 days ago
+            $lte: today,  // End at today's date
         },
-    }).select("createdAt")
+    }).select("createdAt");  // Select only the 'createdAt' field for each message
 
+    // Initialize an array to store the number of messages for each day in the last 7 days (starting with 0 messages for each day)
     const messages = new Array(7).fill(0);
+
+    // Define the number of milliseconds in one day
     const dayInMiliSeconds = 1000 * 60 * 60 * 24;
 
+    // Iterate over each message in the last 7 days
     last7DaysMessages.forEach((message) => {
+        // Calculate the approximate index of the message based on how many days ago it was created
         const indexApprox = (today.getTime() - message.createdAt.getTime()) / dayInMiliSeconds;
-        const index = Math.floor(indexApprox)
+        const index = Math.floor(indexApprox);  // Round down to the nearest integer to get the correct index
 
-        messages[6 - index]++
-    })
+        // Increment the message count for the corresponding day (6 - index because we want the most recent day first)
+        messages[6 - index]++;
+    });
 
+    // Prepare the final statistics object to return
     const stats = {
-       groupsCount,
-       usersCount,
-       messagesCount,
-       totalChatCount,
-       messagesChart: messages,
-    }
+        groupsCount,  // Total number of group chats
+        usersCount,  // Total number of users
+        messagesCount,  // Total number of messages
+        totalChatCount,  // Total number of chats (including group and possibly other types of chats)
+        messagesChart: messages,  // Array representing the number of messages for each of the last 7 days
+    };
 
-
-
+    // Send the statistics as a JSON response with a success flag
     return res.status(200).json({
         success: true,
         stats,
-    })
-})
+    });
+});
+
 
 
 
