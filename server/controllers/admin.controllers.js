@@ -87,10 +87,10 @@ const allChats = TryCatch(async (req, res) => {
 
 
 const allMessages = TryCatch(async (req, res) => {
-    const messages = await Message.find({}
+    const messages = await Message.find({})
         .populate("sender", "name avatar" )
         .populate("chat", "groupChat")
-    )
+    
 
     const tranformedMessages = messages.map(({_id, content, attachments, sender, chat, createdAt}) => ({
         _id,
@@ -114,4 +114,54 @@ const allMessages = TryCatch(async (req, res) => {
 
 })
 
-export { allUsers, allChats, allMessages }
+const getDashboardStats = TryCatch(async (req, res) => {
+
+    const [groupsCount, usersCount, messagesCount, totalChatCount] = await Promise.all([
+        Chat.countDocuments({groupChat: true}),
+        User.countDocuments(),
+        Message.countDocuments(),
+        Chat.countDocuments(),
+    ])
+
+    const today = new Date()
+
+    const last7Days = new Date()
+    last7Days.setDate(last7Days.getDate() - 7)
+
+    const last7DaysMessages = await Message.find({
+        createdAt: {
+            $gte: last7Days,
+            $lte:today,
+
+        },
+    }).select("createdAt")
+
+    const messages = new Array(7).fill(0);
+    const dayInMiliSeconds = 1000 * 60 * 60 * 24;
+
+    last7DaysMessages.forEach((message) => {
+        const indexApprox = (today.getTime() - message.createdAt.getTime()) / dayInMiliSeconds;
+        const index = Math.floor(indexApprox)
+
+        messages[6 - index]++
+    })
+
+    const stats = {
+       groupsCount,
+       usersCount,
+       messagesCount,
+       totalChatCount,
+       messagesChart: messages,
+    }
+
+
+
+    return res.status(200).json({
+        success: true,
+        stats,
+    })
+})
+
+
+
+export { allUsers, allChats, allMessages, getDashboardStats }
