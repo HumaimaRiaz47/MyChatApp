@@ -1,12 +1,13 @@
 import express from 'express'
-import { allChats, allMessages, allUsers, getDashboardStats } from '../controllers/admin.controllers.js'
+import { adminLogin, allChats, allMessages, allUsers, getDashboardStats } from '../controllers/admin.controllers.js'
+import { adminLoginValidator, validateHandler } from '../lib/validators.js'
 
 
 const app = express.Router()
 
 app.get("/")
 
-app.post("/verify")
+app.post("/verify",adminLoginValidator(), validateHandler,  adminLogin)
 
 app.get("/logout")
 

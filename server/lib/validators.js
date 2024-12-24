@@ -87,6 +87,10 @@ const chatIdValidator = () => [
     .withMessage("accept must be a boolean"),
   ];
   
+  const adminLoginValidator = () => [
+    body("secretKey", "please enter secret key").notEmpty(),
+ 
+  ];
   
 
 export {
@@ -100,5 +104,6 @@ export {
   chatIdValidator,
   renameValidator,
   sendRequestValidator,
-  acceptRequestValidator
+  acceptRequestValidator,
+  adminLoginValidator
 };
