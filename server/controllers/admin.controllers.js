@@ -1,5 +1,7 @@
 import { TryCatch } from "../middlewares/error.js";
 import { User } from "../models/user.model.js";
+import {Chat} from "../models/chat.model.js"
+import { Message } from "../models/message.model.js";
 
 const allUsers = TryCatch(async (req, res) => {
   const users = await User.find({});
@@ -40,8 +42,76 @@ const transformedUsers = await Promise.all(
   });
 })
 
+// Define a function to handle all chat retrieval and transformation
+const allChats = TryCatch(async (req, res) => {
+  
+    // Fetch all chats from the Chat collection
+    const chats = await Chat.find({})
+        .populate("members", "name, avatar")  // Populate members' name and avatar
+        .populate("creator", "name, avatar"); // Populate creator's name and avatar
+
+    // Use Promise.all to process each chat asynchronously and transform data
+    const transformedChats = await Promise.all(
+        chats.map(async ({ name, _id, groupChat, creator, members }) => {
+
+            // Count the total number of messages in the current chat
+            const totalMessages = await Message.countDocuments({ chat: _id });
+
+            // Return the transformed chat data with additional details
+            return {
+                name, // The chat's name
+                _id, // The chat's unique identifier
+                groupChat, // Boolean indicating if it's a group chat
+                avatar: members.slice(0, 3).map((member) => member.avatar.url), // Get avatars of the first 3 members
+                members: members.map(({ _id, name, avatar }) => ({
+                    _id, // Member's unique identifier
+                    name, // Member's name
+                    avatar: avatar.url, // Member's avatar URL
+                })),
+                creator: {
+                    name: creator?.name || "None", // The creator's name (or "None" if not available)
+                    avatar: creator?.avatar.url || "", // The creator's avatar URL (or empty string if not available)
+                },
+                totalMembers: members.length, // Total number of members in the chat
+                totalMessages, // Total number of messages in the chat
+            };
+        })
+    );
+
+    // Return the response with the transformed chats data
+    return res.status(200).json({
+        success: true, // Indicates that the operation was successful
+        chats: transformedChats, // The transformed chats data
+    });
+});
 
 
+const allMessages = TryCatch(async (req, res) => {
+    const messages = await Message.find({}
+        .populate("sender", "name avatar" )
+        .populate("chat", "groupChat")
+    )
+
+    const tranformedMessages = messages.map(({_id, content, attachments, sender, chat, createdAt}) => ({
+        _id,
+        attachments,
+        content,
+        createdAt,
+        chat: chat._id,
+        groupChat:chat.groupChat,
+        sender: {
+            _id: sender._id,
+            name: sender.name,
+            avatar: sender.avatar.url,
+        }
+    }))
 
 
-export { allUsers }
+    return res.status(200).json({
+        success: true,
+        messages,
+    })
+
+})
+
+export { allUsers, allChats, allMessages }
