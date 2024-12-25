@@ -22,6 +22,9 @@ app.use(cookieParser())
 
 const mongoURI = process.env.MONGO_URI
 const port = process.env.PORT || 3000
+export const envMode = process.env.NODE_ENV.trim() || "PRODUCTION"
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "chatapp";
+
 
 connectDB(mongoURI)
 
@@ -39,5 +42,5 @@ app.get('/', (req, res) =>{
 app.use(errorMiddleware)
 
 app.listen(port, () => {
-    console.log(`server is running on port 3000`)
+    console.log(`server is running on port ${port} in ${envMode} Mode`)
 })

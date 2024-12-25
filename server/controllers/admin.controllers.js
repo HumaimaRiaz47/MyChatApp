@@ -5,14 +5,12 @@ import { Message } from "../models/message.model.js";
 import { ErrorHandler } from "../utils/utility.js";
 import jwt from "jsonwebtoken";
 import { cookieOptions } from "../utils/features.js";
+import { adminSecretKey } from "../app.js";
 
 // Admin login endpoint using a try-catch wrapper (TryCatch).
 const adminLogin = TryCatch(async (req, res, next) => {
   // Extract the secretKey from the request body.
   const { secretKey } = req.body;
-
-  // The predefined admin secret key (could be stored in environment variables).
-  const adminSecretKey = process.env.ADMIN_SECRET_KEY || "chatapp";
 
   // Check if the provided secretKey matches the admin's stored secretKey.
   const isMatched = secretKey === adminSecretKey;
@@ -50,6 +48,15 @@ const adminLogout = TryCatch(async (req, res, next) => {
         message: "Logged out successfully", // Provide a success message to the user.
       });
   });
+
+const getAdminData = TryCatch(async (req, res , next) => {
+
+
+
+    return res.status(200).json({
+        admin: true,
+    })
+})
 
 const allUsers = TryCatch(async (req, res) => {
   const users = await User.find({});
@@ -213,4 +220,4 @@ const getDashboardStats = TryCatch(async (req, res) => {
   });
 });
 
-export { allUsers, allChats, allMessages, getDashboardStats, adminLogin, adminLogout };
+export { allUsers, allChats, allMessages, getDashboardStats, adminLogin, adminLogout, getAdminData };

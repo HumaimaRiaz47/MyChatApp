@@ -12,7 +12,9 @@ import { getOtherMember } from "../lib/helper.js";
 const newUser = async (req, res, next) => {
   const { name, username, password, bio } = req.body;
 
-  console.log(req.body);
+  const file = req.file
+
+  if(!file) return next (new ErrorHandler("Please upload avatar"))
 
   const avatar = {
     public_id: "gdgf",

@@ -21,7 +21,6 @@ const registerValidator = () => [
   body("username", "please enter username").notEmpty(),
   body("password", "please enter password").notEmpty(),
   body("bio", "please enter bio").notEmpty(),
-  check("avatar").notEmpty().withMessage("please upload avatar"),
 ];
 
 const loginValidator = () => [
@@ -55,11 +54,7 @@ const removeMemberValidator = () => [
 
 const sendAttachmentsValidator = () => [
     body("chatId", "please enter chat id").notEmpty(),
-    check("files")
-    .notEmpty()
-    .withMessage("please upload attachments") 
-    .isArray({ min: 1, max: 5 })
-    .withMessage("members must be 1-5"),
+  
 
 ];
 
