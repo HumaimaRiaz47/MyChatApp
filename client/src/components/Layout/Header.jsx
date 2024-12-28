@@ -1,27 +1,27 @@
-import {AppBar, Box, IconButton, Toolbar, Typography, Tooltip, dividerClasses} from "@mui/material";
+import {AppBar, Box, IconButton, Toolbar, Typography, Tooltip, dividerClasses, Backdrop} from "@mui/material";
+
+
+
+
+
+
+
 
 import { orange } from "@mui/material/colors";
-import {Add as AddIcon, Menu as MenuIcon, Search as SearchIcon, Group as GroupIcon, Logout as LogoutIcon, Notifications as NotificationsIcon} from "@mui/icons-material";
+import {Add as AddIcon, 
+    Menu as MenuIcon, 
+    Search as SearchIcon, 
+    Group as GroupIcon, 
+    Logout as LogoutIcon, 
+    Notifications as NotificationsIcon
+} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import React, {Suspense, lazy, useState } from 'react';
 
+const SearchDialog = lazy(() => import("../Specific/Search"));
+const NotificationDialog = lazy(() => import ("../Specific/Notifications"));
+const NewGroupDialog = lazy(() => import ("../Specific/NewGroup"));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//const SearchDialog = lazy(() => import("../Specific/Search"));
-//const NotificationDialog = lazy(() => import ("../Specific/Notifications"));
-//const NewGroupDialog = lazy(() => import ("../Specific/NewGroup"));
 
 const Header = () => {
 
@@ -114,21 +114,37 @@ const Header = () => {
 
                 </Toolbar>
             </AppBar>
-    </Box>
-    {isSearch && (<Suspense fallback={ <div>Loading..</div>  }>
+        </Box>
+
+    
+    {isSearch && (
+        <Suspense fallback={ <Backdrop open />  }>
     <SearchDialog />
     </Suspense>)}
 
-    {isNotification && (<Suspense fallback={ <div>Loading..</div>  }>
+    {isNotification && (
+        <Suspense fallback={ <Backdrop open />  }>
     <NotificationDialog />
     </Suspense>)}
 
-    {isNewGroup && (<Suspense fallback={ <div>Loading..</div>  }>
+    {isNewGroup && (
+        <Suspense fallback={ <Backdrop open />  }>
     <NewGroupDialog />
     </Suspense>)}
-
     </>
   );
+};
+
+const IconBtn = ({title, icon, onClick}) => {
+    return(
+        <Tooltip title={title}>
+            <IconButton color = "inherit" size = "large" onClick={onClick}>
+                {iconf}
+            </IconButton>
+        </Tooltip>
+    )
 }
+
+
    
 export default Header
