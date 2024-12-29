@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import{Avatar, Button, Container, IconButton, Paper, Stack, TextField, Typography} from "@mui/material"
-import {CameraAlt as CameraAltIcon, PermPhoneMsg, TypeSpecimen} from "@mui/icons-material"
+import {CameraAlt as CameraAltIcon, Gradient, PermPhoneMsg, TypeSpecimen} from "@mui/icons-material"
 import { VisuallyHiddenInput } from '../components/styles/StyledComponents';
-import {useInputValidation} from '6pp';
-
+import {useFileHandler, useInputValidation, useStrongPassword} from '6pp';
+import { usernameValidator } from '../utils/validatorts';
+import { blue, pink } from '@mui/material/colors';
 
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -13,10 +14,21 @@ const toggleLogin = () => setIsLogin((prev)=> !prev);
 
 const name = useInputValidation("");
 const bio = useInputValidation("");
-const username = useInputValidation("");
-const password = useInputValidation("");
+const username = useInputValidation("", usernameValidator);
+const password = useStrongPassword();
+
+const avatar = useFileHandler("single");
+
+const handleLogin = (e) => {
+  e.preventDefault();
+};
+
+const handleSignUp = (e) => {
+  e.preventDefault();
+};
 
   return (
+      
     <Container component={"main"} 
     maxWidth="xs" 
     sx={{height: "100vh",
@@ -40,7 +52,10 @@ const password = useInputValidation("");
           <form style={{
             Width: "100%",
             marginTop: "1rem",
-        }}>
+        }}
+        onSubmit={handleLogin}
+
+        >
             <TextField
             required 
             fullWidth 
@@ -68,7 +83,7 @@ const password = useInputValidation("");
             color="primary" 
             type="submit"
             fullWidth>
-                Login
+                Loginhh
         </Button>
 
         <Typography textAlign={"center"} m={"1rem"}>
@@ -92,6 +107,7 @@ const password = useInputValidation("");
             Width: "100%",
             marginTop: "1rem",
         }}
+        onSubmit={handleSignUp}
         >
 
         <Stack
@@ -103,7 +119,20 @@ const password = useInputValidation("");
         sx={{width: "10rem",
             height: "10rem",
             objectFit: "contain",
-        }}/>
+        }}
+        src={avatar.preview}
+        />
+
+        {avatar.error && (
+              <Typography m={"1rem"}
+              width={"fit-content"}
+              color="error"
+              varient="caption">
+                {avatar.error}
+              </Typography>
+            )
+        }
+
         <IconButton 
         sx={{
             position: "absolute",
@@ -115,7 +144,7 @@ const password = useInputValidation("");
             component="label">
             <>
             <CameraAltIcon />
-            <VisuallyHiddenInput type="file" />
+            <VisuallyHiddenInput type="file" onChange={avatar.changeHandler}/>
             </>
         </IconButton>
         </Stack>
@@ -150,13 +179,13 @@ const password = useInputValidation("");
             value={username.value}
             onChange={username.changeHandler}
             />
-
-            {username.error && (
-              <Typography color="error" varient="caption">
+          {
+            username.error && (
+              <Typography color="error" variant="caption">
                 {username.error}
               </Typography>
-              )
-            }
+            )
+          }
 
         <TextField
             required 
@@ -168,6 +197,13 @@ const password = useInputValidation("");
             value={password.value}
             onChange={password.changeHandler}
             />
+
+            {password.error && (
+              <Typography color="error" varient="caption">
+                {password.error}
+              </Typography>
+              )
+            }
 
         <Button 
             sx={{marginTop: "1rem",}}
@@ -195,6 +231,7 @@ const password = useInputValidation("");
       )}
     </Paper>
   </Container>
+
   );
 };
 
