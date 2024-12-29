@@ -1,12 +1,6 @@
 import {AppBar, Box, IconButton, Toolbar, Typography, Tooltip, dividerClasses, Backdrop} from "@mui/material";
 
 
-
-
-
-
-
-
 import { orange } from "@mui/material/colors";
 import {Add as AddIcon, 
     Menu as MenuIcon, 
@@ -139,7 +133,7 @@ const IconBtn = ({title, icon, onClick}) => {
     return(
         <Tooltip title={title}>
             <IconButton color = "inherit" size = "large" onClick={onClick}>
-                {iconf}
+                {icon}
             </IconButton>
         </Tooltip>
     )

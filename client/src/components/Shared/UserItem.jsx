@@ -2,7 +2,7 @@ import { Avatar, IconButton, ListItem, ListItemText, Stack, Typography } from '@
 import React, { memo } from 'react'
 import {Add as AddIcon} from "@mui/icons-material"
 
-const UserItem = (user, handler, handlerIsLoading) => {
+const UserItem = ({user, handler, handlerIsLoading}) => {
 
     const {name, _id, avatar} = user;
   return (
@@ -13,12 +13,12 @@ const UserItem = (user, handler, handlerIsLoading) => {
             spacing={"1rem"}
             width={"100%"}
             >
-            <Avatar />
-{/*Typography isn't working as it should* vid 2:23 onwards*/}
+        <Avatar src={avatar} alt={name} />
+        {/*Typography isn't working as it should* vid 2:23 onwards*/}
             <Typography
           variant="body1"
           sx={{
-            flexGlow: 1,
+            flexGrow: 1,
             display: "-webkit-box",
             WebkitLineClamp: 1,
             WebkitBoxOrient: "vertical",
