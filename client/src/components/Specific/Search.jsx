@@ -48,10 +48,10 @@ let isLoadingSendFriendRequest = false;
 
      
 
-          {users.map((user) => (
+          {users.map((i) => (
             <UserItem
-              user={user}
-              key={user._id}
+              user={i}
+              key={i._id}
               handler={addFriendHandler}
               handlerIsLoading={isLoadingSendFriendRequest}
             />
