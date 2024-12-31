@@ -5,7 +5,7 @@ import { LayoutLoader } from './components/Layout/Loader';
 import axios from 'axios'
 import { server } from './Constants/config';
 import { useDispatch, useSelector } from 'react-redux';
-import { userNotExists } from './redux/reducers/auth';
+import { userExists, userNotExists } from './redux/reducers/auth';
 import { Toaster } from 'react-hot-toast';
 
 const Home = lazy(() => import("./pages/Home"));
@@ -14,12 +14,10 @@ const Chat = lazy(() => import("./pages/Chat"));
 const Groups = lazy(() => import("./pages/Groups"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-<<<<<<< HEAD
-=======
+
 const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
 
 let user = true;
->>>>>>> e1872da3bab988351a376a96779afb7dd95bc945
 const App = () => {
 
   const {user, loader} = useSelector((state) => state.auth)
@@ -28,8 +26,9 @@ const dispatch = useDispatch()
 
   useEffect(() => {
 
-    axios.get(`${server}/api/v1/user/profile`)
-    .then((res) => console.log(res))
+    axios
+    .get(`${server}/api/v1/user/profile`, {withCredentials: true})
+    .then(({data}) => dispatch(userExists(data.user)))
     .catch((err) => dispatch(userNotExists))
 
   }, [dispatch])
