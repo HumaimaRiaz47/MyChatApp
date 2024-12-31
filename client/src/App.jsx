@@ -14,6 +14,12 @@ const Chat = lazy(() => import("./pages/Chat"));
 const Groups = lazy(() => import("./pages/Groups"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+<<<<<<< HEAD
+=======
+const AdminLogin = lazy(() => import("./pages/Admin/AdminLogin"));
+
+let user = true;
+>>>>>>> e1872da3bab988351a376a96779afb7dd95bc945
 const App = () => {
 
   const {user, loader} = useSelector((state) => state.auth)
@@ -45,6 +51,9 @@ const dispatch = useDispatch()
             </ProtectRoute>
           }
           />
+
+      <Route path='/admin' element={<AdminLogin />}/>
+
       <Route path='*' element={<NotFound />}/>
       </Routes>      
       </Suspense>

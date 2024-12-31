@@ -17,11 +17,12 @@ const Search = () => {
   const search = useInputValidation("");
 
 let isLoadingSendFriendRequest = false;
-  const [users, setUsers] = useState(sampleUsers);
+  const [users, setUsers] = useState(sampleUsers || []);
 
-  const addFriendHandler = (id) => {
+  const addFriendHandler = (_id) => {
     console.log(_id)
   };
+
 
   return (
     <Dialog open>
@@ -42,8 +43,11 @@ let isLoadingSendFriendRequest = false;
             ),
           }}
         />
-
+ 
         <List>
+
+     
+
           {users.map((i) => (
             <UserItem
               user={i}

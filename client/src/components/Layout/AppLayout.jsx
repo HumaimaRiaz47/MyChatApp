@@ -35,7 +35,7 @@ const handleDeleteChat = (e, _id, groupChat) => {
               
           />
           </Grid2>
-          <Grid2 size={{xs:12, sm:8, md: 5, lg:6}} height={"100%"} bgcolor="primary.main">
+          <Grid2 size={{xs:12, sm:8, md: 5, lg:6}} height={"100%"} >
             <WrappedComponent{...props}/>
           </Grid2>
           <Grid2 size={{md: 4, lg:3}} sx={{display: {xs: "none", md: "block"}, 
