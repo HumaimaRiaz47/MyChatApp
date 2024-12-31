@@ -15,10 +15,10 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
-import { bgGradient } from "../constants/color";
-import { server } from "../constants/config";
+import { bgGradient } from "../Constants/colors";
+import { server } from "../Constants/colors";
 import { userExists } from "../redux/reducers/auth";
-import { usernameValidator } from "../utils/validators";
+import { usernameValidator } from "../utils/validatorts";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);

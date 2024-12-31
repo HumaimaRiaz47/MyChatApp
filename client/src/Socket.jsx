@@ -1,6 +1,6 @@
 import { createContext, useMemo, useContext } from "react";
 import io from "socket.io-client";
-import { server } from "./constants/config";
+import { server } from "./Constants/config.js";
 
 const SocketContext = createContext();
 
