@@ -16,15 +16,15 @@ import {
   ONLINE_USERS,
   START_TYPING,
   STOP_TYPING,
-} from "./constants/events.js";
+} from "./constants/event.js";
 import { getSockets } from "./lib/helper.js";
-import { Message } from "./models/message.js";
+import { Message } from "./models/message.model.js";
 import { corsOptions } from "./constants/config.js";
 import { socketAuthenticator } from "./middlewares/auth.js";
 
-import userRoute from "./routes/user.js";
-import chatRoute from "./routes/chat.js";
-import adminRoute from "./routes/admin.js";
+import userRoute from "./routes/user.routes.js";
+import chatRoute from "./routes/chat.routes.js";
+import adminRoute from "./routes/admin.routes.js";
 
 dotenv.config({
   path: "./.env",

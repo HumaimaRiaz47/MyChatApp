@@ -1,6 +1,6 @@
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
-import { Chat } from "../models/chat.js";
+import { Chat } from "../models/chat.model.js";
 import {
   deletFilesFromCloudinary,
   emitEvent,
@@ -11,10 +11,10 @@ import {
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   REFETCH_CHATS,
-} from "../constants/events.js";
+} from "../constants/event.js";
 import { getOtherMember } from "../lib/helper.js";
-import { User } from "../models/user.js";
-import { Message } from "../models/message.js";
+import { User } from "../models/user.model.js";
+import { Message } from "../models/message.model.js";
 
 const newGroupChat = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;

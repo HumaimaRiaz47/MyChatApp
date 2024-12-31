@@ -1,10 +1,10 @@
 import { compare } from "bcrypt";
-import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
+import { NEW_REQUEST, REFETCH_CHATS } from "../constants/event.js";
 import { getOtherMember } from "../lib/helper.js";
 import { TryCatch } from "../middlewares/error.js";
-import { Chat } from "../models/chat.js";
-import { Request } from "../models/request.js";
-import { User } from "../models/user.js";
+import { Chat } from "../models/chat.model.js";
+import { Request } from "../models/request.model.js";
+import { User } from "../models/user.model.js";
 import {
   cookieOptions,
   emitEvent,

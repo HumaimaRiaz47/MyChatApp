@@ -3,7 +3,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { adminSecretKey } from "../app.js";
 import { TryCatch } from "./error.js";
 import { CHATAPP_TOKEN } from "../constants/config.js";
-import { User } from "../models/user.js";
+import { User } from "../models/user.model.js";
 
 const isAuthenticated = TryCatch((req, res, next) => {
   const token = req.cookies[CHATAPP_TOKEN];
