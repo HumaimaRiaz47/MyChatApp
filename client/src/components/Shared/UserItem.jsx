@@ -1,8 +1,8 @@
 import { Avatar, IconButton, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React, { memo } from 'react'
-import {Add as AddIcon} from "@mui/icons-material"
+import {Add as AddIcon, Remove as RemoveIcon} from "@mui/icons-material"
 
-const UserItem = ({user, handler, handlerIsLoading}) => {
+const UserItem = ({user, handler, handlerIsLoading, isAdded=false, styling = {} }) => {
 
     const {name, _id, avatar} = user;
   return (
@@ -12,6 +12,7 @@ const UserItem = ({user, handler, handlerIsLoading}) => {
             alignItems={"center"}
             spacing={"1rem"}
             width={"100%"}
+            {...styling}
             >
         <Avatar src={avatar} alt={name} />
         {/*Typography isn't working as it should* vid 2:23 onwards*/}
@@ -26,7 +27,6 @@ const UserItem = ({user, handler, handlerIsLoading}) => {
             textOverflow: "ellipsis",
             width: "100%",
             color: "black",
-            bgcolor: "yellow"
           }}
         >
           {name}
@@ -34,14 +34,17 @@ const UserItem = ({user, handler, handlerIsLoading}) => {
 
             <IconButton 
             size="small"
-            sx={{bgcolor: "primary.main",
+            sx={{bgcolor: isAdded ? "error.main" : "primary.main",
                 color: "white",
                 "&:hover": {
-                    bgcolor: "primary.dark"
+                    bgcolor: isAdded ? "error.dark" : "primary.dark"
                 }
             }}
             onClick={() => handler(_id)} disabled={handlerIsLoading}>
-                <AddIcon />
+                
+        {isAdded ? <RemoveIcon /> : <AddIcon />}
+                
+                
             </IconButton>
 
 

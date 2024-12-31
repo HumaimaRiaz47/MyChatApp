@@ -79,7 +79,7 @@ const handleSignUp = (e) => {
 
         <Button 
             sx={{marginTop: "1rem",}}
-            varient="contained" 
+            variant="contained" 
             color="primary" 
             type="submit"
             fullWidth>
@@ -90,7 +90,7 @@ const handleSignUp = (e) => {
             OR</Typography>
             <Button 
                 fullWidth
-                varient="Text" 
+                variant="Text" 
                 onClick={toggleLogin}
                 >
                     Sign Up Instead
@@ -127,7 +127,7 @@ const handleSignUp = (e) => {
               <Typography m={"1rem"}
               width={"fit-content"}
               color="error"
-              varient="caption">
+              variant="caption">
                 {avatar.error}
               </Typography>
             )
@@ -199,7 +199,7 @@ const handleSignUp = (e) => {
             />
 
             {password.error && (
-              <Typography color="error" varient="caption">
+              <Typography color="error" variant="caption">
                 {password.error}
               </Typography>
               )
@@ -207,7 +207,7 @@ const handleSignUp = (e) => {
 
         <Button 
             sx={{marginTop: "1rem",}}
-            varient="contained" 
+            variant="contained" 
             color="primary" 
             type="submit"
             fullWidth>

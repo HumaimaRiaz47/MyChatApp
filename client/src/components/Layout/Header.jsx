@@ -1,6 +1,6 @@
 import {AppBar, Box, IconButton, Toolbar, Typography, Tooltip, dividerClasses, Backdrop} from "@mui/material";
-
-
+import { black } from "../../Constants/colors";
+import {blue} from "@mui/material/colors";
 import { orange } from "@mui/material/colors";
 import {Add as AddIcon, 
     Menu as MenuIcon, 
@@ -54,7 +54,7 @@ const Header = () => {
     <AppBar
         position="static"
         sx={{
-        bgcolor: "orange",
+        bgcolor: "blue",
         }}
     >
         <Toolbar>
