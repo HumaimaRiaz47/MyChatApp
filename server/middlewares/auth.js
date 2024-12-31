@@ -20,7 +20,7 @@ const isAuthenticated = async (req, res, next) => {
   next();
 };
 
-const adminOnly = async (req, res, next) => {
+const adminOnly =  TryCatch((req, res, next) => {
   const token = req.cookies["chatapp-admin-token"];
 
   if (!token) {
@@ -36,6 +36,6 @@ const adminOnly = async (req, res, next) => {
   if(!isMatched) return next(new ErrorHandler("only admin can access this route", 401))
 
   next();
-};
+})
 
 export { isAuthenticated, adminOnly };
